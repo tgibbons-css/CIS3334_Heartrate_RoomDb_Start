@@ -10,11 +10,11 @@ import java.sql.Date;
 public class Heartrate {
     @PrimaryKey(autoGenerate = true)
     public int id;
-    public Integer pulse;       // actual rate in beats per minute
+    public Integer pulse;          // actual rate in beats per minute
     public Integer age;            // age when heart rate measurement was taken
     public Double maxHeartRate;    // calculated maximum rate based on age
     public Double percent;         // percent of maximum rate
-    //public Date date;
+    //public Date date;            // DEBT - Skip the date for now since the Java and SQL formats are different
     public Integer range;          // which range this heart rate is in, used as index into arrays below
     @Ignore
     final String rangeNames[] = {"Resting", "Moderate", "Endurance", "Aerobic","Anaerobic","Red zone"};
@@ -27,10 +27,15 @@ public class Heartrate {
     public Heartrate(Integer pulse, Integer age) {
         this.pulse = pulse;
         this.age = age;
-        calcHeartRange(age);
+        calcHeartRange();
     }
 
-    public Integer calcHeartRange(Integer age) {
+    /**
+     * Calulate the maximum heart rate and the percent the pulse is of the maximum
+     * Then determine where this is in the list of ranges and return the index of the range
+     * @return
+     */
+    public Integer calcHeartRange() {
         maxHeartRate = 220.0 - age;        // from  http://www.cdc.gov/physicalactivity/basics/measuring/heartrate.htm
         percent = pulse /maxHeartRate;
         for (int i=0; i<rangeNames.length; i++) {
@@ -43,9 +48,25 @@ public class Heartrate {
         return rangeNames.length-1;                      // this should never happen
     }
 
+    /**
+     * Get the name of the cardio range associated with this person's age and heartrate
+     * @return
+     */
+    public String getRangeName() {
+        calcHeartRange();
+        return rangeNames[range];
+    }
+    /**
+     * Get the long description of the cardio range associated with this person's age and heartrate
+     * @return
+     */
+    public String getRangeDescrtiption() {
+        calcHeartRange();
+        return rangeDescriptions[range];
+    }
+
     public String toString() {
-        // DEBT -- Needs to return actual heartrate info
-        return "Heartrate data here soon..." ;
+        return "Pulse of " + pulse + " - Cardio level: " + getRangeName();
     }
 
 

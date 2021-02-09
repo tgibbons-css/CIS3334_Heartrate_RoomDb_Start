@@ -11,6 +11,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * This is boilerplate code for setting up the Room database
+ * If the database format ever has to change, the version number should be increamented
+ *    and migration methods can be defined to update the database
+ */
 @Database(entities = {Heartrate.class}, version = 1)
 public abstract class HeartrateDatabase extends RoomDatabase {
     public abstract HeartrateDao heartrateDao();

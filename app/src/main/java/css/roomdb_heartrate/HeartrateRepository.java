@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HeartrateRepository {
@@ -17,26 +18,26 @@ public class HeartrateRepository {
     // https://github.com/googlesamples
     HeartrateRepository(Application application) {
         HeartrateDatabase db = HeartrateDatabase.getDatabase(application);
-        Log.d("CIS 3334", "Setting up the Dao and  database");
         heartrateDao = db.heartrateDao();
+        allHeartrates = new ArrayList<Heartrate>();
         //allHeartrates = heartrateDao.getAll();
     }
 
     // Room executes all queries on a separate thread.
-    // Observed LiveData will notify the observer when the data has changed.
+    // Use the databaseWriteExecutor to run any DAO commands in this other thread
     List<Heartrate> getAllHeartrates() {
-        Log.d("CIS 3334", "HeartrateRepository in getAllHeartrates");
-        allHeartrates = heartrateDao.getAll();
+        HeartrateDatabase.databaseWriteExecutor.execute(() -> {
+            allHeartrates = heartrateDao.getAll();
+        });
         return allHeartrates;
     }
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
+    // Use the databaseWriteExecutor to run any DAO commands in this other thread
     void insert(Heartrate heartrate) {
         HeartrateDatabase.databaseWriteExecutor.execute(() -> {
             heartrateDao.insert(heartrate);
-            Log.d("CIS 3334", "Inserting heartrate into database");
-            Log.d ("CIS 3334", heartrate.toString());
         });
     }
 

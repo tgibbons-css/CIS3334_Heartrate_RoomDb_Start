@@ -22,6 +22,4 @@ public interface HeartrateDao {
     @Delete
     void delete(Heartrate heartrate);
 
-
-
 }
