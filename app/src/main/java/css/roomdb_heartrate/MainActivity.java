@@ -15,8 +15,6 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextDisplay;
     Button buttonInsert, buttonUpdate;
 
-    MainViewModel mainViewModel;        // ViewModel with ties to Room database
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
         editTextDisplay = findViewById(R.id.editTextDisplay);
         buttonInsert = findViewById(R.id.buttonInsert);
         buttonUpdate = findViewById(R.id.buttonUpdate);
-        // Set up ViewModel so that is aware of the application context
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
         // Set up the button listeners
         setupInsertButton();
         setupUpdateButton();
@@ -42,9 +39,13 @@ public class MainActivity extends AppCompatActivity {
         buttonInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Integer pulse = Integer.parseInt(editTextPulse.getText().toString());
-                Integer age = Integer.parseInt(editTextAge.getText().toString());
-                mainViewModel.insert(pulse, age);
+                if (editTextPulse.getText().toString() == "") {
+                    Integer pulse = Integer.parseInt(editTextPulse.getText().toString());
+                }
+                if (editTextAge.getText().toString() == "") {
+                    Integer age = Integer.parseInt(editTextAge.getText().toString());
+                }
+                // add code to insert the heartrate into the databse using the ViewModel
 
             }
         });
@@ -56,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String strRates = mainViewModel.getHeartratesAsString();
-                editTextDisplay.setText(strRates);
+                // get the heartrate data from the ViewModel
+                editTextDisplay.setText("Heartrate data should be displayed here");
             }
         });
     }
